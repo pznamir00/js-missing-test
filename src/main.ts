@@ -9,7 +9,7 @@ import getProjectTreeByPRNumber from './project-tree.service/project-tree.servic
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
  */
-async function run() {
+export async function run() {
   try {
     const owner = core.getInput('owner', { required: true })
     const repo = core.getInput('repo', { required: true })
@@ -33,11 +33,7 @@ async function run() {
       lookupStrategy
     )
     await createComment(oct, owner, repo, prNumber, missingTestFiles)
-  } catch (error) {
+  } catch (error: any) {
     core.setFailed(error.message)
   }
-}
-
-module.exports = {
-  run
 }

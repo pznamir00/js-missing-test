@@ -31,8 +31,8 @@
     "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
     "format:write": "npx prettier --write .",
     "format:check": "npx prettier --check .",
-    "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
-    "package": "npx ncc build src/index.js -o dist --source-map --license licenses.txt",
+    "lint": "npx eslint --ext .ts -c ./.github/linters/.eslintrc.yml",
+    "package": "npx ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "package:watch": "npm run package -- --watch",
     "test": "npx jest",
     "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
@@ -45,11 +45,11 @@
     "verbose": true,
     "clearMocks": true,
     "testEnvironment": "node",
-    "moduleFileExtensions": [
-      "js"
-    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
     "testMatch": [
-      "**/*.test.js"
+      "**/*.test.ts"
     ],
     "testPathIgnorePatterns": [
       "/node_modules/",
@@ -68,6 +68,8 @@
   "dependencies": {
     "@actions/core": "^1.10.1",
     "@actions/github": "^6.0.0",
+    "@types/jest": "^29.5.12",
+    "ts-jest": "^29.2.3",
     "typescript": "^5.5.4"
   },
   "devDependencies": {

@@ -20,9 +20,10 @@ inputs:
     required: true
   lookup_strategy:
     description: >
-      Test file searching strategy. Has 2 available options:
-      - same-dir - looks for files in same directory where source file is located
-      - sep-dir:dir-path - looks for files in provided directory that includes all the tests
+      Test file searching strategy. Has 2 available options: - same-dir - looks
+      for files in same directory where source file is located -
+      sep-dir:dir-path - looks for files in provided directory that includes all
+      the tests
     default: same-dir
 
 runs:
