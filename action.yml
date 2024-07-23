@@ -1,18 +1,17 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'js-missing-test'
+description: 'Adds comment on PR if added file has no test'
+author: 'pznamir00'
 
-# Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  repo:
+    description: 'The repository name'
     required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+  pr_number:
+    description: 'Number of pull request'
+    required: true
+  gh_token:
+    description: 'The Github token for access to the repo'
+    required: true
 
 runs:
   using: node20

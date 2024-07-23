@@ -1,21 +1,23 @@
 {
-  "name": "javascript-action",
-  "description": "GitHub Actions JavaScript Template",
-  "version": "0.0.0",
-  "author": "",
+  "name": "js-missing-test",
+  "description": "Adds comment on PR if added file has no test",
+  "version": "1.0.0",
+  "author": "pznamir00",
   "private": true,
-  "homepage": "https://github.com/actions/javascript-action#readme",
+  "homepage": "https://github.com/pznamir00/js-missing-test#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/javascript-action.git"
+    "url": "https://github.com/pznamir00/js-missing-test"
   },
   "bugs": {
-    "url": "https://github.com/actions/javascript-action/issues"
+    "url": "https://github.com/pznamir00/js-missing-test/issues"
   },
   "keywords": [
     "GitHub",
     "Actions",
-    "JavaScript"
+    "JavaScript",
+    "Pull Request",
+    "Tests"
   ],
   "exports": {
     ".": "./dist/index.js"
