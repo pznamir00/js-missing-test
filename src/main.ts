@@ -5,10 +5,6 @@ import findMissingTests from './missing-tests.service/missing-tests.service'
 import createComment from './comment.service/comment.service'
 import getProjectTreeByPRNumber from './project-tree.service/project-tree.service'
 
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
 export async function run() {
   try {
     const owner = core.getInput('owner', { required: true })
@@ -33,8 +29,7 @@ export async function run() {
       lookupStrategy
     )
     await createComment(oct, owner, repo, prNumber, missingTestFiles)
-  } catch (error: any) {
-    core.debug(error)
-    core.setFailed(error.message)
+  } catch (error: unknown) {
+    core.setFailed((error as Error).message)
   }
 }

@@ -1,9 +1,3 @@
-/**
- * Unit tests for the action's main functionality, src/main.js
- */
-import core from '@actions/core'
-import * as main from '../src/main'
-
 describe.skip('action', () => {
   beforeEach(() => {
     jest.clearAllMocks()

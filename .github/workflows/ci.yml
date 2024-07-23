@@ -59,7 +59,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           test_file_ext: test.js
           lookup_strategy: 'sep-dir:__tests__'
-
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"

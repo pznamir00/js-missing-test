@@ -29283,10 +29283,6 @@ const changed_files_service_1 = __importDefault(__nccwpck_require__(2492));
 const missing_tests_service_1 = __importDefault(__nccwpck_require__(317));
 const comment_service_1 = __importDefault(__nccwpck_require__(648));
 const project_tree_service_1 = __importDefault(__nccwpck_require__(3402));
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -29303,7 +29299,6 @@ function run() {
             yield (0, comment_service_1.default)(oct, owner, repo, prNumber, missingTestFiles);
         }
         catch (error) {
-            core_1.default.debug(error);
             core_1.default.setFailed(error.message);
         }
     });
@@ -29412,6 +29407,7 @@ function getProjectTreeByPRNumber(octokit, owner, repo, prNumber) {
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LookupStrategy = void 0;
+// eslint-disable-next-line no-shadow
 var LookupStrategy;
 (function (LookupStrategy) {
     LookupStrategy["SAME_DIR"] = "same-dir";
@@ -31312,12 +31308,11 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+var exports = __webpack_exports__;
 
-/**
- * The entrypoint for the action.
- */
-const { run } = __nccwpck_require__(399);
-run();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const main_1 = __nccwpck_require__(399);
+(0, main_1.run)();
 
 })();
 
