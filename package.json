@@ -1,6 +1,6 @@
 {
   "name": "js-missing-test",
-  "description": "Adds comment on PR if added file has no test",
+  "description": "Adds comment on PR if changed file has no test",
   "version": "1.0.0",
   "author": "pznamir00",
   "private": true,
@@ -66,7 +66,9 @@
     ]
   },
   "dependencies": {
-    "@actions/core": "^1.10.1"
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
+    "typescript": "^5.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.24.8",

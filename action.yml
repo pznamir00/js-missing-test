@@ -1,8 +1,11 @@
 name: 'js-missing-test'
-description: 'Adds comment on PR if added file has no test'
+description: 'Adds comment on PR if changed file has no test'
 author: 'pznamir00'
 
 inputs:
+  owner:
+    description: 'Owner'
+    required: true
   repo:
     description: 'The repository name'
     required: true
@@ -12,6 +15,15 @@ inputs:
   gh_token:
     description: 'The Github token for access to the repo'
     required: true
+  test_file_ext:
+    description: 'Extension of test files (e.g. test.js)'
+    required: true
+  lookup_strategy:
+    description: >
+      Test file searching strategy. Has 2 available options:
+      - same-dir - looks for files in same directory where source file is located
+      - sep-dir:dir-path - looks for files in provided directory that includes all the tests
+    default: same-dir
 
 runs:
   using: node20
