@@ -34,6 +34,7 @@ export async function run() {
     )
     await createComment(oct, owner, repo, prNumber, missingTestFiles)
   } catch (error: any) {
+    core.debug(error)
     core.setFailed(error.message)
   }
 }
