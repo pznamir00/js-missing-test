@@ -12,7 +12,7 @@ inputs:
   pr_number:
     description: 'Number of pull request'
     required: true
-  gh_token:
+  token:
     description: 'The Github token for access to the repo'
     required: true
   test_file_ext:

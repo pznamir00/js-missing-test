@@ -14,11 +14,11 @@ export async function run() {
     const owner = core.getInput('owner', { required: true })
     const repo = core.getInput('repo', { required: true })
     const prNumber = +core.getInput('pr_number', { required: true })
-    const ghToken = core.getInput('gh_token', { required: true })
+    const token = core.getInput('token', { required: true })
     const testFileExt = core.getInput('test_file_ext', { required: true })
     const lookupStrategy = core.getInput('lookup_strategy', { required: true })
 
-    const oct = github.getOctokit(ghToken)
+    const oct = github.getOctokit(token)
     const changedFileNames = await getChangedFileNames(
       oct,
       owner,
