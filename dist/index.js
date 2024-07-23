@@ -29293,16 +29293,17 @@ function run() {
             const owner = core_1.default.getInput('owner', { required: true });
             const repo = core_1.default.getInput('repo', { required: true });
             const prNumber = +core_1.default.getInput('pr_number', { required: true });
-            const ghToken = core_1.default.getInput('gh_token', { required: true });
+            const token = core_1.default.getInput('token', { required: true });
             const testFileExt = core_1.default.getInput('test_file_ext', { required: true });
             const lookupStrategy = core_1.default.getInput('lookup_strategy', { required: true });
-            const oct = github_1.default.getOctokit(ghToken);
+            const oct = github_1.default.getOctokit(token);
             const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber);
             const tree = yield (0, project_tree_service_1.default)(oct, owner, repo, prNumber);
             const missingTestFiles = (0, missing_tests_service_1.default)(changedFileNames, tree, testFileExt, lookupStrategy);
             yield (0, comment_service_1.default)(oct, owner, repo, prNumber, missingTestFiles);
         }
         catch (error) {
+            core_1.default.debug(error);
             core_1.default.setFailed(error.message);
         }
     });
