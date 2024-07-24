@@ -43,6 +43,7 @@ jobs:
   test-action:
     name: GitHub Actions Test
     runs-on: ubuntu-latest
+    permissions: write-all
 
     steps:
       - name: Checkout
@@ -57,9 +58,6 @@ jobs:
           repo: ${{ github.event.repository.name }}
           pr_number: ${{ github.event.number }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          test_file_ext: test.js
-          lookup_strategy: 'sep-dir:__tests__'
-
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+          test_file_ext: test.ts
+          lookup_strategy: same-dir
+          ignore_pattern: ^(?!.*\.(type|enum|d)\.ts$).*\.(ts|js|jsx|tsx)$

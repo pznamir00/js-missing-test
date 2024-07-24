@@ -1214,7 +1214,7 @@ exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context 
 const Context = __importStar(__nccwpck_require__(4087));
 const Utils = __importStar(__nccwpck_require__(7914));
 // octokit + plugins
-const core_1 = __nccwpck_require__(6762);
+const core_1 = __nccwpck_require__(4077);
 const plugin_rest_endpoint_methods_1 = __nccwpck_require__(3044);
 const plugin_paginate_rest_1 = __nccwpck_require__(4193);
 exports.context = new Context.Context();
@@ -2168,7 +2168,7 @@ var createTokenAuth = function createTokenAuth2(token) {
 
 /***/ }),
 
-/***/ 6762:
+/***/ 4077:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -5983,6 +5983,29 @@ class Deprecation extends Error {
 }
 
 exports.Deprecation = Deprecation;
+
+
+/***/ }),
+
+/***/ 6762:
+/***/ ((module) => {
+
+"use strict";
+/*! file-extension v4.0.5 | (c) silverwind | BSD license */
+
+
+(function(m) {
+  if (true) {
+    module.exports = m();
+  } else {}
+})(function() {
+  return function fileExtension(filename, opts) {
+    if (!opts) opts = {};
+    if (!filename) return "";
+    var ext = (/[^./\\]*$/.exec(filename) || [""])[0];
+    return opts.preserveCase ? ext : ext.toLowerCase();
+  };
+});
 
 
 /***/ }),
@@ -29189,7 +29212,7 @@ function wrappy (fn, cb) {
 /***/ }),
 
 /***/ 2492:
-/***/ (function(__unused_webpack_module, exports) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -29202,8 +29225,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = getChangedFileNames;
+const file_extension_1 = __importDefault(__nccwpck_require__(6762));
+const JS_FILE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx'];
 function getChangedFilesList(octokit, owner, repo, prNumber) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data: changedFiles } = yield octokit.rest.pulls.listFiles({
@@ -29214,11 +29242,26 @@ function getChangedFilesList(octokit, owner, repo, prNumber) {
         return changedFiles;
     });
 }
-function getChangedFileNames(octokit, owner, repo, prNumber) {
+function removeFilesOutOfRootDir(files, rootDir) {
+    return files.filter(fn => fn.includes(`${rootDir}/`));
+}
+function getOnlyJSFiles(files) {
+    return files.filter(fn => JS_FILE_EXTENSIONS.includes((0, file_extension_1.default)(fn)));
+}
+function removeFilesToIgnore(files, ignorePattern) {
+    return files.filter(fn => fn.match(ignorePattern));
+}
+function removeTestFiles(files, testFileExt) {
+    return files.filter(fn => !fn.endsWith(testFileExt));
+}
+function getChangedFileNames(octokit, owner, repo, prNumber, ignorePattern, rootDir, testFileExt) {
     return __awaiter(this, void 0, void 0, function* () {
         const changedFiles = yield getChangedFilesList(octokit, owner, repo, prNumber);
-        const changedFilenames = changedFiles.map(file => file.filename);
-        return changedFilenames;
+        let filenames = changedFiles.map(file => file.filename);
+        filenames = getOnlyJSFiles(filenames);
+        filenames = removeFilesOutOfRootDir(filenames, rootDir);
+        filenames = removeTestFiles(filenames, testFileExt);
+        return removeFilesToIgnore(filenames, new RegExp(ignorePattern));
     });
 }
 
@@ -29248,8 +29291,10 @@ function createComment(octokit, owner, repo, prNumber, missingTestFiles) {
             repo,
             issue_number: prNumber,
             body: `
-        Pull request #${prNumber} is missing following tests:
-        ${missingTestFiles.map(value => `- source file: ${value.srcPath} is missing ${value.testPath} test file\n`)}    
+    Pull request #${prNumber} is missing ${missingTestFiles.length} tests:
+    ${missingTestFiles
+                .map(value => `- source file: ${value.srcPath} is missing ${value.testPath} test file\n`)
+                .join('')}
     `
         });
     });
@@ -29277,33 +29322,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
-const core_1 = __importDefault(__nccwpck_require__(2186));
-const github_1 = __importDefault(__nccwpck_require__(5438));
 const changed_files_service_1 = __importDefault(__nccwpck_require__(2492));
 const missing_tests_service_1 = __importDefault(__nccwpck_require__(317));
 const comment_service_1 = __importDefault(__nccwpck_require__(648));
 const project_tree_service_1 = __importDefault(__nccwpck_require__(3402));
-/**
- * The main function for the action.
- * @returns {Promise<void>} Resolves when the action is complete.
- */
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const core = __nccwpck_require__(2186);
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const github = __nccwpck_require__(5438);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const owner = core_1.default.getInput('owner', { required: true });
-            const repo = core_1.default.getInput('repo', { required: true });
-            const prNumber = +core_1.default.getInput('pr_number', { required: true });
-            const ghToken = core_1.default.getInput('gh_token', { required: true });
-            const testFileExt = core_1.default.getInput('test_file_ext', { required: true });
-            const lookupStrategy = core_1.default.getInput('lookup_strategy', { required: true });
-            const oct = github_1.default.getOctokit(ghToken);
-            const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber);
+            const owner = core.getInput('owner', { required: true });
+            const repo = core.getInput('repo', { required: true });
+            const prNumber = +core.getInput('pr_number', { required: true });
+            const token = core.getInput('token', { required: true });
+            const testFileExt = core.getInput('test_file_ext', { required: true });
+            const lookupStrategy = core.getInput('lookup_strategy', { required: true });
+            const ignorePattern = core.getInput('ignore_pattern', { required: true });
+            const rootDir = core.getInput('root_directory', { required: true });
+            const oct = github.getOctokit(token);
+            const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber, ignorePattern, rootDir, testFileExt);
             const tree = yield (0, project_tree_service_1.default)(oct, owner, repo, prNumber);
             const missingTestFiles = (0, missing_tests_service_1.default)(changedFileNames, tree, testFileExt, lookupStrategy);
-            yield (0, comment_service_1.default)(oct, owner, repo, prNumber, missingTestFiles);
+            if (missingTestFiles.length) {
+                yield (0, comment_service_1.default)(oct, owner, repo, prNumber, missingTestFiles);
+            }
         }
         catch (error) {
-            core_1.default.setFailed(error.message);
+            core.setFailed(error.message);
         }
     });
 }
@@ -29320,16 +29367,20 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = findMissingTests;
 const lookup_strategy_enum_1 = __nccwpck_require__(8958);
 function srcFilePathToTestFilePath(srcFilePath, testFileExt, lookupStrategy) {
-    if (lookupStrategy === lookup_strategy_enum_1.LookupStrategy.SAME_DIR) {
-        const srcParts = srcFilePath.split('.');
+    const removeExtension = (path) => {
+        const srcParts = path.split('.');
         srcParts.pop();
-        const srcWithoutExt = srcParts.join('.');
+        return srcParts.join('.');
+    };
+    if (lookupStrategy === lookup_strategy_enum_1.LookupStrategy.SAME_DIR) {
+        const srcWithoutExt = removeExtension(srcFilePath);
         return `${srcWithoutExt}.${testFileExt}`;
     }
     else {
-        const dirPath = lookupStrategy.split(':').pop();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_, dirPath] = lookupStrategy.split(':');
         const srcFile = srcFilePath.split('/').pop();
-        const srcFileName = srcFile === null || srcFile === void 0 ? void 0 : srcFile.split('.')[0];
+        const srcFileName = removeExtension(srcFile);
         return `${dirPath}/${srcFileName}.${testFileExt}`;
     }
 }
@@ -29339,7 +29390,7 @@ function findMissingTests(changedFileNames, tree, testFileExt, lookupStrategy) {
         srcPath: fn,
         testPath: srcFilePathToTestFilePath(fn, testFileExt, lookupStrategy)
     }))
-        .filter(pair => tree.find(row => row.path === pair.testPath));
+        .filter(pair => !tree.find(row => row.path === pair.testPath));
 }
 
 
@@ -29411,6 +29462,7 @@ function getProjectTreeByPRNumber(octokit, owner, repo, prNumber) {
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LookupStrategy = void 0;
+// eslint-disable-next-line no-shadow
 var LookupStrategy;
 (function (LookupStrategy) {
     LookupStrategy["SAME_DIR"] = "same-dir";
@@ -31311,12 +31363,11 @@ var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be in strict mode.
 (() => {
 "use strict";
+var exports = __webpack_exports__;
 
-/**
- * The entrypoint for the action.
- */
-const { run } = __nccwpck_require__(399);
-run();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const main_1 = __nccwpck_require__(399);
+(0, main_1.run)();
 
 })();
 

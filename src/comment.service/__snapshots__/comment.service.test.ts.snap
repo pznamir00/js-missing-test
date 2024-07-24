@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`comment service createComment calls rest.issues.createComment 1`] = `
+"
+    Pull request #2137 is missing 4 tests:
+    - source file: src/file1.js is missing src/file1.test.js test file
+- source file: src/file2.js is missing src/file2.test.js test file
+- source file: src/file3.js is missing src/file3.test.js test file
+- source file: src/file4.js is missing src/file4.test.js test file
+
+    "
+`;

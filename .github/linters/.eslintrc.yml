@@ -15,7 +15,7 @@ ignorePatterns:
   - '**/coverage/.*'
   - '*.json'
 
-parser: '@babel/eslint-parser'
+parser: '@typescript-eslint/parser'
 
 parserOptions:
   ecmaVersion: 2023
@@ -29,9 +29,11 @@ parserOptions:
 
 plugins:
   - jest
+  - '@typescript-eslint'
 
 extends:
   - eslint:recommended
+  - plugin:@typescript-eslint/recommended
   - plugin:github/recommended
   - plugin:jest/recommended
 
@@ -46,5 +48,6 @@ rules:
     'no-console': 'off',
     'no-unused-vars': 'off',
     'prettier/prettier': 'error',
-    'semi': 'off'
+    'semi': 'off',
+    'filenames/match-regex': 'off'
   }

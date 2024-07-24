@@ -13,11 +13,13 @@ export default async function createComment(
     repo,
     issue_number: prNumber,
     body: `
-        Pull request #${prNumber} is missing following tests:
-        ${missingTestFiles.map(
-          value =>
-            `- source file: ${value.srcPath} is missing ${value.testPath} test file\n`
-        )}    
+    Pull request #${prNumber} is missing ${missingTestFiles.length} tests:
+    ${missingTestFiles
+      .map(
+        value =>
+          `- source file: ${value.srcPath} is missing ${value.testPath} test file\n`
+      )
+      .join('')}
     `
   })
 }
