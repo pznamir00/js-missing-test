@@ -50,3 +50,5 @@ rules:
     'prettier/prettier': 'error',
     'semi': 'off'
   }
+
+TSX_LINTER_RULES:
