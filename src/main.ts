@@ -1,4 +1,3 @@
-import github from '@actions/github'
 import getChangedFileNames from './changed-files.service/changed-files.service'
 import findMissingTests from './missing-tests.service/missing-tests.service'
 import createComment from './comment.service/comment.service'
@@ -6,6 +5,8 @@ import getProjectTreeByPRNumber from './project-tree.service/project-tree.servic
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const core = require('@actions/core')
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const github = require('@actions/github')
 
 export async function run() {
   try {
