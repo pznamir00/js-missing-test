@@ -58,6 +58,6 @@ jobs:
           repo: ${{ github.event.repository.name }}
           pr_number: ${{ github.event.number }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          test_file_ext: test.js
-          lookup_strategy: 'sep-dir:__tests__'
+          test_file_ext: test.ts
+          lookup_strategy: same-dir
           ignore_pattern: ^(?!.*\.(type|enum|d)\.ts$).*\.(ts|js|jsx|tsx)$

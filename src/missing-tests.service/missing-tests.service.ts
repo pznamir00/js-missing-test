@@ -7,15 +7,20 @@ function srcFilePathToTestFilePath(
   testFileExt: string,
   lookupStrategy: string
 ): string {
-  if (lookupStrategy === LookupStrategy.SAME_DIR) {
-    const srcParts = srcFilePath.split('.')
+  const removeExtension = (path: string) => {
+    const srcParts = path.split('.')
     srcParts.pop()
-    const srcWithoutExt = srcParts.join('.')
+    return srcParts.join('.')
+  }
+
+  if (lookupStrategy === LookupStrategy.SAME_DIR) {
+    const srcWithoutExt = removeExtension(srcFilePath)
     return `${srcWithoutExt}.${testFileExt}`
   } else {
-    const dirPath = lookupStrategy.split(':').pop()
-    const srcFile = srcFilePath.split('/').pop()
-    const srcFileName = srcFile?.split('.')[0]
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [_, dirPath] = lookupStrategy.split(':')
+    const srcFile = srcFilePath.split('/').pop() as string
+    const srcFileName = removeExtension(srcFile)
     return `${dirPath}/${srcFileName}.${testFileExt}`
   }
 }
