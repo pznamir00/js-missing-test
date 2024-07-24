@@ -4,35 +4,91 @@ import getChangedFileNames from './changed-files.service'
 describe('changed files service', () => {
   describe('getChangedFileNames', () => {
     it('calls listFiles', async () => {
-      const { octokit, owner, repo, prNumber } = setup()
-      await getChangedFileNames(octokit, owner, repo, prNumber)
-      expect(octokit.rest.pulls.listFiles).toHaveBeenCalledWith({
-        owner,
-        repo,
-        pull_number: prNumber
+      const props = setup()
+      await getChangedFileNames(
+        props.octokit,
+        props.owner,
+        props.repo,
+        props.prNumber,
+        props.ignorePattern,
+        props.rootDir,
+        props.testFileExt
+      )
+      expect(props.octokit.rest.pulls.listFiles).toHaveBeenCalledWith({
+        owner: props.owner,
+        repo: props.repo,
+        pull_number: props.prNumber
       })
     })
 
     it('returns file names list', async () => {
-      const { octokit, owner, repo, prNumber } = setup()
-      const result = await getChangedFileNames(octokit, owner, repo, prNumber)
-      expect(result).toEqual(['file1.js', 'file2.js', 'file3.js', 'file4.js'])
+      const props = setup()
+      const result = await getChangedFileNames(
+        props.octokit,
+        props.owner,
+        props.repo,
+        props.prNumber,
+        props.ignorePattern,
+        props.rootDir,
+        props.testFileExt
+      )
+      expect(result).toEqual([
+        'src/file1.js',
+        'src/file2.js',
+        'src/file3.js',
+        'src/file4.js'
+      ])
     })
 
     it('returns only js files', async () => {
-      const { octokit, owner, repo, prNumber } = setup()
+      const props = setup()
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      octokit.rest.pulls.listFiles.mockReturnValueOnce({
+      props.octokit.rest.pulls.listFiles.mockReturnValueOnce({
         data: [
-          { filename: 'file.js' },
-          { filename: 'file.html' },
-          { filename: 'file.yml' },
-          { filename: 'file.tsx' }
+          { filename: 'src/file.js' },
+          { filename: 'src/file.html' },
+          { filename: 'src/file.yml' },
+          { filename: 'src/file.tsx' }
         ]
       })
-      const result = await getChangedFileNames(octokit, owner, repo, prNumber)
-      expect(result).toEqual(['file.js', 'file.tsx'])
+      const result = await getChangedFileNames(
+        props.octokit,
+        props.owner,
+        props.repo,
+        props.prNumber,
+        props.ignorePattern,
+        props.rootDir,
+        props.testFileExt
+      )
+      expect(result).toEqual(['src/file.js', 'src/file.tsx'])
+    })
+
+    it('does not return files to ignore, out of root dir and test files', async () => {
+      const props = setup()
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      props.octokit.rest.pulls.listFiles.mockReturnValueOnce({
+        data: [
+          { filename: 'src/file1.type.ts' },
+          { filename: 'src/file2.enum.ts' },
+          { filename: 'src/file3.d.ts' },
+          { filename: 'src/file4.js' },
+          { filename: 'src/file5.ts' },
+          { filename: 'file6.test.js' },
+          { filename: 'src/file7.test.js' }
+        ]
+      })
+      const result = await getChangedFileNames(
+        props.octokit,
+        props.owner,
+        props.repo,
+        props.prNumber,
+        props.ignorePattern,
+        props.rootDir,
+        props.testFileExt
+      )
+      expect(result).toEqual(['src/file4.js', 'src/file5.ts'])
     })
   })
 })
@@ -43,10 +99,10 @@ function setup() {
       pulls: {
         listFiles: jest.fn(() => ({
           data: [
-            { filename: 'file1.js' },
-            { filename: 'file2.js' },
-            { filename: 'file3.js' },
-            { filename: 'file4.js' }
+            { filename: 'src/file1.js' },
+            { filename: 'src/file2.js' },
+            { filename: 'src/file3.js' },
+            { filename: 'src/file4.js' }
           ]
         }))
       }
@@ -55,5 +111,8 @@ function setup() {
   const owner = 'owner123'
   const repo = 'test-project-123'
   const prNumber = 2137
-  return { octokit, owner, repo, prNumber }
+  const ignorePattern = '^(?!.*\\.(type|enum|d)\\.ts$).*\\.(ts|js|jsx|tsx)$'
+  const rootDir = 'src'
+  const testFileExt = 'test.js'
+  return { octokit, owner, repo, prNumber, ignorePattern, rootDir, testFileExt }
 }

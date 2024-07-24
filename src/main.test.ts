@@ -24,7 +24,10 @@ describe('action', () => {
       { oct: true },
       'owner123',
       'test-repo-123',
-      3877
+      3877,
+      '\\[]*!',
+      'src',
+      'test.js'
     )
   })
 
@@ -93,7 +96,9 @@ jest.mock('@actions/core', () => {
           pr_number: '3877',
           token: 'ji2hx93omx6nwi9o2184nxi9xgj35kn2',
           test_file_ext: 'test.js',
-          lookup_strategy: LookupStrategy.SAME_DIR
+          lookup_strategy: LookupStrategy.SAME_DIR,
+          ignore_pattern: '\\[]*!',
+          root_directory: 'src'
         })[key]
     ),
     setFailed: jest.fn()

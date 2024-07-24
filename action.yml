@@ -25,6 +25,11 @@ inputs:
       sep-dir:dir-path - looks for files in provided directory that includes all
       the tests
     default: same-dir
+  root_directory:
+    description: 'Root directory of files'
+    default: src
+  ignore_pattern:
+    description: 'Regex pattern to ignore specific files'
 
 runs:
   using: node20

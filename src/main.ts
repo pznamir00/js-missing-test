@@ -16,13 +16,18 @@ export async function run() {
     const token = core.getInput('token', { required: true })
     const testFileExt = core.getInput('test_file_ext', { required: true })
     const lookupStrategy = core.getInput('lookup_strategy', { required: true })
+    const ignorePattern = core.getInput('ignore_pattern', { required: true })
+    const rootDir = core.getInput('root_directory', { required: true })
 
     const oct = github.getOctokit(token)
     const changedFileNames = await getChangedFileNames(
       oct,
       owner,
       repo,
-      prNumber
+      prNumber,
+      ignorePattern,
+      rootDir,
+      testFileExt
     )
     const tree = await getProjectTreeByPRNumber(oct, owner, repo, prNumber)
     const missingTestFiles = findMissingTests(

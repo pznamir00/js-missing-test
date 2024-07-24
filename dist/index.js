@@ -29242,14 +29242,26 @@ function getChangedFilesList(octokit, owner, repo, prNumber) {
         return changedFiles;
     });
 }
+function removeFilesOutOfRootDir(files, rootDir) {
+    return files.filter(fn => fn.includes(`${rootDir}/`));
+}
 function getOnlyJSFiles(files) {
     return files.filter(fn => JS_FILE_EXTENSIONS.includes((0, file_extension_1.default)(fn)));
 }
-function getChangedFileNames(octokit, owner, repo, prNumber) {
+function removeFilesToIgnore(files, ignorePattern) {
+    return files.filter(fn => fn.match(ignorePattern));
+}
+function removeTestFiles(files, testFileExt) {
+    return files.filter(fn => !fn.endsWith(testFileExt));
+}
+function getChangedFileNames(octokit, owner, repo, prNumber, ignorePattern, rootDir, testFileExt) {
     return __awaiter(this, void 0, void 0, function* () {
         const changedFiles = yield getChangedFilesList(octokit, owner, repo, prNumber);
-        const changedFilenames = changedFiles.map(file => file.filename);
-        return getOnlyJSFiles(changedFilenames);
+        let filenames = changedFiles.map(file => file.filename);
+        filenames = getOnlyJSFiles(filenames);
+        filenames = removeFilesOutOfRootDir(filenames, rootDir);
+        filenames = removeTestFiles(filenames, testFileExt);
+        return removeFilesToIgnore(filenames, new RegExp(ignorePattern));
     });
 }
 
@@ -29325,8 +29337,10 @@ function run() {
             const token = core.getInput('token', { required: true });
             const testFileExt = core.getInput('test_file_ext', { required: true });
             const lookupStrategy = core.getInput('lookup_strategy', { required: true });
+            const ignorePattern = core.getInput('ignore_pattern', { required: true });
+            const rootDir = core.getInput('root_directory', { required: true });
             const oct = github.getOctokit(token);
-            const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber);
+            const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber, ignorePattern, rootDir, testFileExt);
             const tree = yield (0, project_tree_service_1.default)(oct, owner, repo, prNumber);
             const missingTestFiles = (0, missing_tests_service_1.default)(changedFileNames, tree, testFileExt, lookupStrategy);
             if (missingTestFiles.length) {

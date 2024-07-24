@@ -60,3 +60,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           test_file_ext: test.js
           lookup_strategy: 'sep-dir:__tests__'
+          ignore_pattern: ^(?!.*\.(type|enum|d)\.ts$).*\.(ts|js|jsx|tsx)$
