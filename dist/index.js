@@ -29277,21 +29277,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = run;
-const core_1 = __importDefault(__nccwpck_require__(2186));
 const github_1 = __importDefault(__nccwpck_require__(5438));
 const changed_files_service_1 = __importDefault(__nccwpck_require__(2492));
 const missing_tests_service_1 = __importDefault(__nccwpck_require__(317));
 const comment_service_1 = __importDefault(__nccwpck_require__(648));
 const project_tree_service_1 = __importDefault(__nccwpck_require__(3402));
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const core = __nccwpck_require__(2186);
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const owner = core_1.default.getInput('owner', { required: true });
-            const repo = core_1.default.getInput('repo', { required: true });
-            const prNumber = +core_1.default.getInput('pr_number', { required: true });
-            const token = core_1.default.getInput('token', { required: true });
-            const testFileExt = core_1.default.getInput('test_file_ext', { required: true });
-            const lookupStrategy = core_1.default.getInput('lookup_strategy', { required: true });
+            const owner = core.getInput('owner', { required: true });
+            const repo = core.getInput('repo', { required: true });
+            const prNumber = +core.getInput('pr_number', { required: true });
+            const token = core.getInput('token', { required: true });
+            const testFileExt = core.getInput('test_file_ext', { required: true });
+            const lookupStrategy = core.getInput('lookup_strategy', { required: true });
             const oct = github_1.default.getOctokit(token);
             const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber);
             const tree = yield (0, project_tree_service_1.default)(oct, owner, repo, prNumber);
@@ -29299,7 +29300,7 @@ function run() {
             yield (0, comment_service_1.default)(oct, owner, repo, prNumber, missingTestFiles);
         }
         catch (error) {
-            core_1.default.setFailed(error.message);
+            core.setFailed(error.message);
         }
     });
 }
