@@ -46,5 +46,4 @@ jobs:
           JAVASCRIPT_DEFAULT_STYLE: prettier
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_JSCPD: false
-          TYPESCRIPT_ES_CONFIG_FILE:
-            ${{ DEFAULT_WORKSPACE }}/.github/linters/.eslintrc.yml
+          TYPESCRIPT_ES_CONFIG_FILE: ${DEFAULT_WORKSPACE}/.github/linters/.eslintrc.yml
