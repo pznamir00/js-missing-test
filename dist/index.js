@@ -1214,7 +1214,7 @@ exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context 
 const Context = __importStar(__nccwpck_require__(4087));
 const Utils = __importStar(__nccwpck_require__(7914));
 // octokit + plugins
-const core_1 = __nccwpck_require__(6762);
+const core_1 = __nccwpck_require__(4077);
 const plugin_rest_endpoint_methods_1 = __nccwpck_require__(3044);
 const plugin_paginate_rest_1 = __nccwpck_require__(4193);
 exports.context = new Context.Context();
@@ -2168,7 +2168,7 @@ var createTokenAuth = function createTokenAuth2(token) {
 
 /***/ }),
 
-/***/ 6762:
+/***/ 4077:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 "use strict";
@@ -5983,6 +5983,29 @@ class Deprecation extends Error {
 }
 
 exports.Deprecation = Deprecation;
+
+
+/***/ }),
+
+/***/ 6762:
+/***/ ((module) => {
+
+"use strict";
+/*! file-extension v4.0.5 | (c) silverwind | BSD license */
+
+
+(function(m) {
+  if (true) {
+    module.exports = m();
+  } else {}
+})(function() {
+  return function fileExtension(filename, opts) {
+    if (!opts) opts = {};
+    if (!filename) return "";
+    var ext = (/[^./\\]*$/.exec(filename) || [""])[0];
+    return opts.preserveCase ? ext : ext.toLowerCase();
+  };
+});
 
 
 /***/ }),
@@ -29189,7 +29212,7 @@ function wrappy (fn, cb) {
 /***/ }),
 
 /***/ 2492:
-/***/ (function(__unused_webpack_module, exports) {
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
 
@@ -29202,8 +29225,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = getChangedFileNames;
+const file_extension_1 = __importDefault(__nccwpck_require__(6762));
+const JS_FILE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx'];
 function getChangedFilesList(octokit, owner, repo, prNumber) {
     return __awaiter(this, void 0, void 0, function* () {
         const { data: changedFiles } = yield octokit.rest.pulls.listFiles({
@@ -29214,11 +29242,14 @@ function getChangedFilesList(octokit, owner, repo, prNumber) {
         return changedFiles;
     });
 }
+function getOnlyJSFiles(files) {
+    return files.filter(fn => JS_FILE_EXTENSIONS.includes((0, file_extension_1.default)(fn)));
+}
 function getChangedFileNames(octokit, owner, repo, prNumber) {
     return __awaiter(this, void 0, void 0, function* () {
         const changedFiles = yield getChangedFilesList(octokit, owner, repo, prNumber);
         const changedFilenames = changedFiles.map(file => file.filename);
-        return changedFilenames;
+        return getOnlyJSFiles(changedFilenames);
     });
 }
 
@@ -29297,8 +29328,6 @@ function run() {
             const oct = github.getOctokit(token);
             const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber);
             const tree = yield (0, project_tree_service_1.default)(oct, owner, repo, prNumber);
-            console.log(changedFileNames);
-            console.log(tree);
             const missingTestFiles = (0, missing_tests_service_1.default)(changedFileNames, tree, testFileExt, lookupStrategy);
             if (missingTestFiles.length) {
                 yield (0, comment_service_1.default)(oct, owner, repo, prNumber, missingTestFiles);
@@ -29341,7 +29370,7 @@ function findMissingTests(changedFileNames, tree, testFileExt, lookupStrategy) {
         srcPath: fn,
         testPath: srcFilePathToTestFilePath(fn, testFileExt, lookupStrategy)
     }))
-        .filter(pair => tree.find(row => row.path === pair.testPath));
+        .filter(pair => !tree.find(row => row.path === pair.testPath));
 }
 
 
