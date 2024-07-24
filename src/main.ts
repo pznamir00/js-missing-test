@@ -31,6 +31,7 @@ export async function run() {
       testFileExt,
       lookupStrategy
     )
+    core.debug(JSON.stringify(missingTestFiles))
     await createComment(oct, owner, repo, prNumber, missingTestFiles)
   } catch (error: unknown) {
     core.setFailed((error as Error).message)

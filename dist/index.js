@@ -29248,8 +29248,8 @@ function createComment(octokit, owner, repo, prNumber, missingTestFiles) {
             repo,
             issue_number: prNumber,
             body: `
-        Pull request #${prNumber} is missing following tests:
-        ${missingTestFiles.map(value => `- source file: ${value.srcPath} is missing ${value.testPath} test file\n`)}    
+    Pull request #${prNumber} is missing following tests:
+    ${missingTestFiles.map(value => `- source file: ${value.srcPath} is missing ${value.testPath} test file\n`)}
     `
         });
     });
@@ -29298,6 +29298,7 @@ function run() {
             const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber);
             const tree = yield (0, project_tree_service_1.default)(oct, owner, repo, prNumber);
             const missingTestFiles = (0, missing_tests_service_1.default)(changedFileNames, tree, testFileExt, lookupStrategy);
+            core.debug(JSON.stringify(missingTestFiles));
             yield (0, comment_service_1.default)(oct, owner, repo, prNumber, missingTestFiles);
         }
         catch (error) {
