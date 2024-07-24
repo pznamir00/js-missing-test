@@ -25,14 +25,18 @@ export async function run() {
       prNumber
     )
     const tree = await getProjectTreeByPRNumber(oct, owner, repo, prNumber)
+    console.log(changedFileNames)
+    console.log(tree)
     const missingTestFiles = findMissingTests(
       changedFileNames,
       tree,
       testFileExt,
       lookupStrategy
     )
-    console.log(missingTestFiles)
-    await createComment(oct, owner, repo, prNumber, missingTestFiles)
+
+    if (missingTestFiles.length) {
+      await createComment(oct, owner, repo, prNumber, missingTestFiles)
+    }
   } catch (error: unknown) {
     core.setFailed((error as Error).message)
   }

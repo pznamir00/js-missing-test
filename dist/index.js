@@ -29297,9 +29297,12 @@ function run() {
             const oct = github.getOctokit(token);
             const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber);
             const tree = yield (0, project_tree_service_1.default)(oct, owner, repo, prNumber);
+            console.log(changedFileNames);
+            console.log(tree);
             const missingTestFiles = (0, missing_tests_service_1.default)(changedFileNames, tree, testFileExt, lookupStrategy);
-            console.log(missingTestFiles);
-            yield (0, comment_service_1.default)(oct, owner, repo, prNumber, missingTestFiles);
+            if (missingTestFiles.length) {
+                yield (0, comment_service_1.default)(oct, owner, repo, prNumber, missingTestFiles);
+            }
         }
         catch (error) {
             core.setFailed(error.message);
