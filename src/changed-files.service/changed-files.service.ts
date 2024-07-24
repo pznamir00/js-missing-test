@@ -1,4 +1,7 @@
 import { GitHub } from '@actions/github/lib/utils'
+import fileExt from 'file-extension'
+
+const JS_FILE_EXTENSIONS = ['js', 'jsx', 'ts', 'tsx']
 
 async function getChangedFilesList(
   octokit: InstanceType<typeof GitHub>,
@@ -15,6 +18,10 @@ async function getChangedFilesList(
   return changedFiles
 }
 
+function getOnlyJSFiles(files: string[]) {
+  return files.filter(fn => JS_FILE_EXTENSIONS.includes(fileExt(fn)))
+}
+
 export default async function getChangedFileNames(
   octokit: InstanceType<typeof GitHub>,
   owner: string,
@@ -23,5 +30,5 @@ export default async function getChangedFileNames(
 ) {
   const changedFiles = await getChangedFilesList(octokit, owner, repo, prNumber)
   const changedFilenames = changedFiles.map(file => file.filename)
-  return changedFilenames
+  return getOnlyJSFiles(changedFilenames)
 }

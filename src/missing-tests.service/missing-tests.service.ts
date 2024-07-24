@@ -33,5 +33,5 @@ export default function findMissingTests(
         testPath: srcFilePathToTestFilePath(fn, testFileExt, lookupStrategy)
       })
     )
-    .filter(pair => tree.find(row => row.path === pair.testPath))
+    .filter(pair => !tree.find(row => row.path === pair.testPath))
 }

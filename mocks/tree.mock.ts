@@ -1,4 +1,11 @@
-export const treeMock = {
+import { TreeRow } from '../src/types/tree-row.type'
+
+export const treeMock: {
+  sha: string
+  url: string
+  tree: TreeRow[]
+  truncated: boolean
+} = {
   sha: 'f34326c439ff078c6a5ebd25fa397b72b1223c7e',
   url: 'https://api.github.com/repos/pznamir00/js-missing-test/git/trees/f34326c439ff078c6a5ebd25fa397b72b1223c7e',
   tree: [
@@ -197,14 +204,6 @@ export const treeMock = {
       url: 'https://api.github.com/repos/pznamir00/js-missing-test/git/blobs/0b20ef948e830d7b61bd9c5ee4582f90e2bef31b'
     },
     {
-      path: '__tests__/main.test.js',
-      mode: '100644',
-      type: 'blob',
-      sha: '021a7d1b73e11b26f35340de0f5023f1d0aa492a',
-      size: 2660,
-      url: 'https://api.github.com/repos/pznamir00/js-missing-test/git/blobs/021a7d1b73e11b26f35340de0f5023f1d0aa492a'
-    },
-    {
       path: 'action.yml',
       mode: '100644',
       type: 'blob',
@@ -304,6 +303,14 @@ export const treeMock = {
       sha: '1654b6c0f20760ea3293e577c523fffd38627292',
       size: 835,
       url: 'https://api.github.com/repos/pznamir00/js-missing-test/git/blobs/1654b6c0f20760ea3293e577c523fffd38627292'
+    },
+    {
+      path: 'src/utils.js',
+      mode: '100649',
+      type: 'blob',
+      sha: '87204411654b6c0f20760577c523fffd38627292',
+      size: 766,
+      url: 'https://api.github.com/repos/pznamir00/js-missing-test/git/blobs/87204411654b6c0f20760577c523fffd38627292'
     }
   ],
   truncated: false

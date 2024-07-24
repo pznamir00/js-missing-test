@@ -25,8 +25,6 @@ export async function run() {
       prNumber
     )
     const tree = await getProjectTreeByPRNumber(oct, owner, repo, prNumber)
-    console.log(changedFileNames)
-    console.log(tree)
     const missingTestFiles = findMissingTests(
       changedFileNames,
       tree,
