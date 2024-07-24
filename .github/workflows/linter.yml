@@ -36,6 +36,9 @@ jobs:
         id: install
         run: npm ci
 
+      - name: LS
+        run: ls /action/lib/.automation/
+
       - name: Lint Codebase
         id: super-linter
         uses: super-linter/super-linter/slim@v6
