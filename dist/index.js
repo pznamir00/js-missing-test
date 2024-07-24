@@ -29365,16 +29365,20 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports["default"] = findMissingTests;
 const lookup_strategy_enum_1 = __nccwpck_require__(8958);
 function srcFilePathToTestFilePath(srcFilePath, testFileExt, lookupStrategy) {
-    if (lookupStrategy === lookup_strategy_enum_1.LookupStrategy.SAME_DIR) {
-        const srcParts = srcFilePath.split('.');
+    const removeExtension = (path) => {
+        const srcParts = path.split('.');
         srcParts.pop();
-        const srcWithoutExt = srcParts.join('.');
+        return srcParts.join('.');
+    };
+    if (lookupStrategy === lookup_strategy_enum_1.LookupStrategy.SAME_DIR) {
+        const srcWithoutExt = removeExtension(srcFilePath);
         return `${srcWithoutExt}.${testFileExt}`;
     }
     else {
-        const dirPath = lookupStrategy.split(':').pop();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [_, dirPath] = lookupStrategy.split(':');
         const srcFile = srcFilePath.split('/').pop();
-        const srcFileName = srcFile === null || srcFile === void 0 ? void 0 : srcFile.split('.')[0];
+        const srcFileName = removeExtension(srcFile);
         return `${dirPath}/${srcFileName}.${testFileExt}`;
     }
 }
