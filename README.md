@@ -47,10 +47,10 @@ jobs:
       - name: 'Detect missing test files'
         uses: pznamir00/js-missing-test@v1.0.0
         with:
-          owner: \${{ github.repository_owner }}
-          repo: \${{ github.event.repository.name }}
-          pr_number: \${{ github.event.number }}
-          token: \${{ secrets.GITHUB_TOKEN }}
+          owner: ${{ github.repository_owner }}
+          repo: ${{ github.event.repository.name }}
+          pr_number: ${{ github.event.number }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           test_file_ext: test.js
 
 ```
