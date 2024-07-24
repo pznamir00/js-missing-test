@@ -4,6 +4,7 @@ import createComment from './comment.service/comment.service'
 import { run } from './main'
 import findMissingTests from './missing-tests.service/missing-tests.service'
 import getProjectTreeByPRNumber from './project-tree.service/project-tree.service'
+import validateLookupStrategy from './validators/lookup-strategy.validator/lookup-strategy.validator'
 import { LookupStrategy } from './types/lookup-strategy.enum'
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const core = require('@actions/core')
@@ -11,6 +12,11 @@ const core = require('@actions/core')
 const github = require('@actions/github')
 
 describe('action', () => {
+  it('calls validateLookupStrategy', async () => {
+    await run()
+    expect(validateLookupStrategy).toHaveBeenCalledWith(LookupStrategy.SAME_DIR)
+  })
+
   it('calls getOctokit', async () => {
     await run()
     expect(github.getOctokit).toHaveBeenCalledWith(
@@ -125,4 +131,8 @@ jest.mock('./missing-tests.service/missing-tests.service', () =>
 jest.mock('./comment.service/comment.service', () => jest.fn())
 jest.mock('./project-tree.service/project-tree.service', () =>
   jest.fn(() => [...treeMock.tree])
+)
+jest.mock(
+  './validators/lookup-strategy.validator/lookup-strategy.validator',
+  () => jest.fn()
 )

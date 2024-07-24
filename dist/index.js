@@ -29326,6 +29326,7 @@ const changed_files_service_1 = __importDefault(__nccwpck_require__(2492));
 const missing_tests_service_1 = __importDefault(__nccwpck_require__(317));
 const comment_service_1 = __importDefault(__nccwpck_require__(648));
 const project_tree_service_1 = __importDefault(__nccwpck_require__(3402));
+const lookup_strategy_validator_1 = __importDefault(__nccwpck_require__(4592));
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const core = __nccwpck_require__(2186);
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -29341,6 +29342,7 @@ function run() {
             const lookupStrategy = core.getInput('lookup_strategy', { required: true });
             const ignorePattern = core.getInput('ignore_pattern', { required: true });
             const rootDir = core.getInput('root_directory', { required: true });
+            (0, lookup_strategy_validator_1.default)(lookupStrategy);
             const oct = github.getOctokit(token);
             const changedFileNames = yield (0, changed_files_service_1.default)(oct, owner, repo, prNumber, ignorePattern, rootDir, testFileExt);
             const tree = yield (0, project_tree_service_1.default)(oct, owner, repo, prNumber);
@@ -29468,6 +29470,46 @@ var LookupStrategy;
     LookupStrategy["SAME_DIR"] = "same-dir";
     LookupStrategy["SEP_DIR"] = "sep-dir";
 })(LookupStrategy || (exports.LookupStrategy = LookupStrategy = {}));
+
+
+/***/ }),
+
+/***/ 4592:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports["default"] = validateLookupStrategy;
+const lookup_strategy_enum_1 = __nccwpck_require__(8958);
+const wrong_sep_dir_definition_error_type_1 = __importDefault(__nccwpck_require__(3089));
+function validateLookupStrategy(value) {
+    if (value === lookup_strategy_enum_1.LookupStrategy.SAME_DIR) {
+        return;
+    }
+    if (!value.match(/^sep-dir:(?:[^/:]+\/?)+$/)) {
+        throw new wrong_sep_dir_definition_error_type_1.default();
+    }
+}
+
+
+/***/ }),
+
+/***/ 3089:
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+class WrongSeparateDirectoryDefinitionError extends Error {
+    constructor() {
+        super('Wrong separate directory definition. Correct definition should be "sep-dir:<path/to/dir>"');
+    }
+}
+exports["default"] = WrongSeparateDirectoryDefinitionError;
 
 
 /***/ }),

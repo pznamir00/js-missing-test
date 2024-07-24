@@ -2,6 +2,7 @@ import getChangedFileNames from './changed-files.service/changed-files.service'
 import findMissingTests from './missing-tests.service/missing-tests.service'
 import createComment from './comment.service/comment.service'
 import getProjectTreeByPRNumber from './project-tree.service/project-tree.service'
+import validateLookupStrategy from './validators/lookup-strategy.validator/lookup-strategy.validator'
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const core = require('@actions/core')
@@ -18,6 +19,8 @@ export async function run() {
     const lookupStrategy = core.getInput('lookup_strategy', { required: true })
     const ignorePattern = core.getInput('ignore_pattern', { required: true })
     const rootDir = core.getInput('root_directory', { required: true })
+
+    validateLookupStrategy(lookupStrategy)
 
     const oct = github.getOctokit(token)
     const changedFileNames = await getChangedFileNames(
