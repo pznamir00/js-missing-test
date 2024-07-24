@@ -36,9 +36,6 @@ jobs:
         id: install
         run: npm ci
 
-      - name: LS
-        run: ls /action/lib/.automation/
-
       - name: Lint Codebase
         id: super-linter
         uses: super-linter/super-linter/slim@v6
@@ -49,4 +46,5 @@ jobs:
           JAVASCRIPT_DEFAULT_STYLE: prettier
           VALIDATE_ALL_CODEBASE: true
           VALIDATE_JSCPD: false
-          TYPESCRIPT_ES_CONFIG_FILE: .github/linters/.eslintrc.yml
+          TYPESCRIPT_ES_CONFIG_FILE:
+            ${{ DEFAULT_WORKSPACE }}/.github/linters/.eslintrc.yml
