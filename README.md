@@ -33,13 +33,24 @@ The action supports 2 lookup strategies that define way of searching test files:
 You can define your action on events related to pull requests. You can use the following code:
 
 ```yaml
-- name: 'Detect missing test files'
-  uses: ./
-  with:
-    owner: \${{ github.repository_owner }}
-    repo: \${{ github.event.repository.name }}
-    pr_number: \${{ github.event.number }}
-    token: \${{ secrets.GITHUB_TOKEN }}
-    test_file_ext: test.js
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+
+jobs:
+  detect-missing-test-files:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Detect missing test files'
+        uses: pznamir00/js-missing-test@v1.0.0
+        with:
+          owner: \${{ github.repository_owner }}
+          repo: \${{ github.event.repository.name }}
+          pr_number: \${{ github.event.number }}
+          token: \${{ secrets.GITHUB_TOKEN }}
+          test_file_ext: test.js
 
 ```
