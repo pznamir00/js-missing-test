@@ -70,7 +70,7 @@
     "@actions/github": "^6.0.0",
     "@types/jest": "^29.5.12",
     "file-extension": "^4.0.5",
-    "ts-jest": "^29.2.3",
+    "ts-jest": "^29.2.4",
     "typescript": "^5.5.4"
   },
   "devDependencies": {
